@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Exam Score Predictor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <canvas id="particles"></canvas>
+  <nav class="navbar glass">
+    <div class="brand">ExamAI</div>
+    <div class="nav-links">
+      <a href="#predict">Predict</a>
+      <a href="#analytics">Analytics</a>
+      <a href="#encoder">Encoders</a>
+      <a href="#dataset">Dataset</a>
+    </div>
+    <button id="themeToggle" class="ghost-btn">Theme</button>
+  </nav>
+
+  <header class="hero" id="hero">
+    <div class="hero-content glass">
+      <p class="tag">NEXT-GEN ACADEMIC INTELLIGENCE</p>
+      <h1>AI Exam Score Predictor</h1>
+      <p class="animated-line" id="typeLine"></p>
+      <button class="cta" data-scroll="#predict">Start Live Prediction</button>
+    </div>
+    <div class="floating-icons">
+      <span>??</span><span>??</span><span>??</span><span>??</span>
+    </div>
+  </header>
+
+  <section id="predict" class="section">
+    <h2>Live Prediction</h2>
+    <div class="grid">
+      <form id="predictionForm" class="glass card">
+        <label>Study Hours
+          <input type="number" name="study_hours" step="0.1" min="0" max="20" required />
+        </label>
+        <label>Class Attendance (%)
+          <input type="number" name="class_attendance" step="0.1" min="0" max="100" required />
+        </label>
+        <label>Sleep Hours
+          <input type="number" name="sleep_hours" step="0.1" min="0" max="14" required />
+        </label>
+        <label>Sleep Quality
+          <select name="sleep_quality" required>
+            <option value="good">Good</option>
+            <option value="average">Average</option>
+            <option value="poor">Poor</option>
+          </select>
+        </label>
+        <label>Study Method
+          <select name="study_method" required>
+            <option value="self-study">Self Study</option>
+            <option value="group study">Group Study</option>
+            <option value="online videos">Online Videos</option>
+            <option value="coaching">Coaching</option>
+            <option value="mixed">Mixed</option>
+          </select>
+        </label>
+        <label>Facility Rating (alias for parental involvement)
+          <select name="facility_rating" required>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+        </label>
+        <div class="btn-row">
+          <button type="button" id="voiceFill" class="ghost-btn">Voice Input</button>
+          <button type="submit" class="cta">Predict Score</button>
+        </div>
+      </form>
+
+      <div class="glass card result-card">
+        <div id="loader" class="loader hidden"></div>
+        <h3>Predicted Score</h3>
+        <p id="scoreDisplay">--</p>
+        <div class="progress-wrap"><div id="progressBar"></div></div>
+        <p id="confidenceDisplay">AI Confidence: --</p>
+        <button id="downloadReport" class="ghost-btn">Download Report</button>
+        <canvas id="performanceChart"></canvas>
+      </div>
+    </div>
+    <div class="glass card">
+      <h3>Prediction History</h3>
+      <ul id="historyList"></ul>
+    </div>
+  </section>
+
+  <section id="analytics" class="section">
+    <h2>Model Analytics</h2>
+    <div class="cards-3">
+      <div class="glass card"><h3>XGBoost Regressor</h3><p>Gradient-boosted trees combine many weak learners into a high-accuracy score predictor.</p></div>
+      <div class="glass card"><h3>Workflow</h3><p>Input -> validation -> label encoding -> feature vector -> XGBoost inference -> score response.</p></div>
+      <div class="glass card"><h3>Accuracy Focus</h3><p>Model tuned for stability, generalization, and robust performance on mixed categorical + numeric features.</p></div>
+    </div>
+    <div class="glass card"><canvas id="featureChart"></canvas></div>
+  </section>
+
+  <section id="encoder" class="section">
+    <h2>Why <code>label_encoders.pkl</code> is Required</h2>
+    <div class="glass card">
+      <p><strong>label_encoders.pkl</strong> stores the same category-to-number mappings used during model training.</p>
+      <p>During live prediction, text values like <em>"good"</em>, <em>"self-study"</em>, or <em>"high"</em> must be converted into exact numeric IDs expected by the trained XGBoost model.</p>
+      <p>Without the saved encoders, inference would use inconsistent mappings and predictions could become incorrect.</p>
+    </div>
+  </section>
+
+  <section id="dataset" class="section">
+    <h2>Dataset & Training</h2>
+    <div class="cards-3">
+      <div class="glass card"><h3>Preprocessing</h3><p>Clean records, normalize feature types, and encode categorical fields using label encoders.</p></div>
+      <div class="glass card"><h3>Tuning</h3><p>Hyperparameters were tuned for better bias-variance balance and improved score prediction quality.</p></div>
+      <div class="glass card"><h3>Why XGBoost</h3><p>Excellent for tabular data, handles non-linear patterns, and offers strong performance with engineered features.</p></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>AI Chat Assistant</h2>
+    <div class="glass card chatbot">
+      <div id="chatLog"></div>
+      <div class="chat-row">
+        <input id="chatInput" placeholder="Ask about model, features, encoding..." />
+        <button id="chatSend" class="cta">Send</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer glass">
+    <p>AI Exam Score Predictor</p>
+    <div>
+      <a href="#">GitHub</a>
+      <a href="#">LinkedIn</a>
+      <a href="#">Contact</a>
+      <a href="#hero">Back to Top</a>
+    </div>
+  </footer>
+
+  <div id="toast"></div>
+</body>
+</html>
